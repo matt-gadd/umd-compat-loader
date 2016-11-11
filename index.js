@@ -1,5 +1,6 @@
 const recast = require('recast');
 const types = require('ast-types');
+const compose = require('recast/lib/util').composeSourceMaps;
 
 function isUMD(content) {
 	return content.indexOf('var v = factory(require, exports); if (v !== undefined) module.exports = v;') > -1;
@@ -12,25 +13,18 @@ function matches(arr) {
 }
 
 function fixUMD(content, sourceMap) {
-	const ast = recast.parse(content);
+	const ast = recast.parse(content, {
+		sourceFileName: sourceMap.file
+	});
 	types.visit(ast, {
-		visitCallExpression(path) {
-			const callee = path.node.callee;
-			const args = path.node.arguments;
-
-			if (callee.name === 'factory' && matches(args)) {
-				args.forEach((arg, i) => arg.name = 'undefined');
-			}
-
-			this.traverse(path);
-		},
 		visitFunctionExpression(path) {
 			const params = path.node.params;
-
 			if (matches(params)) {
-				params.forEach((param, i) => param.name = `__no_op${i}__`);
+				const body = ast.program.body;
+				body.pop();
+				ast.program.body = [ ...body, ...path.node.body.body ];
+				this.abort();
 			}
-
 			this.traverse(path);
 		}
 	});
@@ -41,21 +35,19 @@ module.exports = function(content, sourceMap) {
 	this.cacheable && this.cacheable();
 
 	if (isUMD(content)) {
-
-		const ast = fixUMD(content);
-
+		const ast = fixUMD(content, sourceMap);
 		if(sourceMap) {
-			const result = recast.print(ast, { inputSourceMap: sourceMap });
-			this.callback(null, result.code, result.map);
+			const result = recast.print(ast, { sourceMapName: sourceMap.file });
+			const map = compose(sourceMap, result.map);
+			this.callback(null, result.code, map);
 			return;
 		}
-
 		return recast.print(ast).code;
 	}
 
 	if (sourceMap) {
 		this.callback(null, content, sourceMap);
+		return;
 	}
-
 	return content;
 }
