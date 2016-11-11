@@ -2,7 +2,7 @@ const recast = require('recast');
 const types = require('ast-types');
 const compose = require('recast/lib/util').composeSourceMaps;
 
-function isUMD(content) {
+function sniff(content) {
 	return content.indexOf('var v = factory(require, exports); if (v !== undefined) module.exports = v;') > -1;
 }
 
@@ -12,7 +12,7 @@ function matches(arr) {
 	return arr.every((item) => allowed.includes(item.name));
 }
 
-function fixUMD(content, sourceMap) {
+function convert(content, sourceMap) {
 	const ast = recast.parse(content, {
 		sourceFileName: sourceMap.file
 	});
@@ -34,8 +34,8 @@ function fixUMD(content, sourceMap) {
 module.exports = function(content, sourceMap) {
 	this.cacheable && this.cacheable();
 
-	if (isUMD(content)) {
-		const ast = fixUMD(content, sourceMap);
+	if (sniff(content)) {
+		const ast = convert(content, sourceMap);
 		if(sourceMap) {
 			const result = recast.print(ast, { sourceMapName: sourceMap.file });
 			const map = compose(sourceMap, result.map);
