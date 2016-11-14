@@ -9,7 +9,7 @@ function sniff(content) {
 function matches(arr) {
 	const allowed = [ 'require', 'exports' ];
 	if (arr.length !== allowed.length) return;
-	return arr.every((item) => allowed.includes(item.name));
+	return arr.every((item, i) => allowed[i] === item);
 }
 
 function convert(content, sourceMap) {
