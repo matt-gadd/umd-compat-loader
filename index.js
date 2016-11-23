@@ -9,13 +9,15 @@ function sniff(content) {
 function matches(arr) {
 	const allowed = [ 'require', 'exports' ];
 	if (arr.length !== allowed.length) return;
-	return arr.every((item, i) => allowed[i] === item);
+	return arr.every((item, i) => allowed[i] === item.name);
 }
 
 function convert(content, sourceMap) {
-	const ast = recast.parse(content, {
-		sourceFileName: sourceMap.file
-	});
+	const args = {}
+	if (sourceMap) {
+		args.sourceFileName = sourceMap.file
+	}
+	const ast = recast.parse(content, args);
 	types.visit(ast, {
 		visitFunctionExpression(path) {
 			const params = path.node.params;
