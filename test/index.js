@@ -10,7 +10,8 @@ describe('umd-compat-loader', function() {
 		inputSourceMap,
 		cjsSource,
 		cjsSourceMap,
-		outputAmdSource;
+		outputAmdSource,
+		outputAmdSourceMap;
 
 	beforeEach(() => {
 		inputSource = fs.readFileSync('./test/fixtures/umd.js', 'utf8');
@@ -23,6 +24,9 @@ describe('umd-compat-loader', function() {
 
 		outputSourceMap = fs.readFileSync('./test/fixtures/output.js.map', 'utf8');
 		outputSourceMap = JSON.parse(outputSourceMap);
+
+		outputAmdSourceMap = fs.readFileSync('./test/fixtures/output-amd.js.map', 'utf8');
+		outputAmdSourceMap = JSON.parse(outputAmdSourceMap);
 
 		cjsSourceMap = fs.readFileSync('./test/fixtures/commonjs.js.map', 'utf8');
 		cjsSourceMap = JSON.parse(cjsSourceMap);
@@ -56,6 +60,17 @@ describe('umd-compat-loader', function() {
 					assert.equal(code, outputSource);
 					assert.deepEqual(map, outputSourceMap);
 				}
+			});
+			loader(inputSource, inputSourceMap);
+		});
+
+		it('should remove umd wrapper and re-wrap as amd when sniffed', function () {
+			loader = index.bind({
+				callback: (no, code, map) => {
+					assert.equal(code, outputAmdSource);
+					assert.deepEqual(map, outputAmdSourceMap);
+				},
+				query: '?amd=true'
 			});
 			loader(inputSource, inputSourceMap);
 		});
