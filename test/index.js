@@ -54,4 +54,5 @@ describe('umd-compat-loader', function() {
 			loader(cjsSource, cjsSourceMap);
 		});
 	});
+
 });
