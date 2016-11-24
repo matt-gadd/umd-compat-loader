@@ -35,7 +35,6 @@ function convert(content, sourceMap, amd) {
 				const body = ast.program.body;
 				body.pop();
 				if (amd) {
-					/*defineCall.arguments[1] = b.functionExpression(null, path.node.params, path.node.body);*/
 					defineCall.arguments[1] = path.node;
 					ast.program = defineCall;
 				} else {
