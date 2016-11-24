@@ -2,6 +2,7 @@ const recast = require('recast');
 const types = require('ast-types');
 const compose = require('recast/lib/util').composeSourceMaps;
 const loaderUtils = require("loader-utils");
+const b = types.builders;
 
 function sniff(content) {
 	return content.indexOf('var v = factory(require, exports); if (v !== undefined) module.exports = v;') > -1;
@@ -35,7 +36,7 @@ function convert(content, sourceMap, amd) {
 				body.pop();
 				if (amd) {
 					defineCall.arguments[1] = path.node;
-					ast.program = defineCall;
+					ast.program.body = [ ...body, b.expressionStatement(defineCall) ];
 				} else {
 					ast.program.body = [ ...body, ...path.node.body.body ];
 				}

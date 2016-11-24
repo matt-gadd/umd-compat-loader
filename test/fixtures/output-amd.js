@@ -5,4 +5,4 @@ define(["require", "exports", './a', './b'], function (require, exports) {
     var hello = a_1.default() + b_1.default();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = hello;
-})
+});
