@@ -2,7 +2,6 @@ const recast = require('recast');
 const types = require('ast-types');
 const compose = require('recast/lib/util').composeSourceMaps;
 const loaderUtils = require("loader-utils");
-const b = types.builders;
 
 function sniff(content) {
 	return content.indexOf('var v = factory(require, exports); if (v !== undefined) module.exports = v;') > -1;
