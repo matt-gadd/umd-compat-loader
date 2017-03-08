@@ -60,7 +60,7 @@ function convert(content, sourceMap, amd) {
 }
 
 module.exports = function(content, sourceMap) {
-	const options = loaderUtils.getOptions(this);
+	const options = loaderUtils.getOptions(this) || {};
 	this.cacheable && this.cacheable();
 
 	if (sniff(content)) {
