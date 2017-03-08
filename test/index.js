@@ -31,7 +31,7 @@ describe('umd-compat-loader', function() {
 		cjsSourceMap = fs.readFileSync('./test/fixtures/commonjs.js.map', 'utf8');
 		cjsSourceMap = JSON.parse(cjsSourceMap);
 
-		loader = index.bind({ callback: () => {} });
+		loader = index.bind({ callback: () => {}, query: {} });
 	});
 
 	describe('content only', function () {
@@ -59,7 +59,8 @@ describe('umd-compat-loader', function() {
 				callback: (no, code, map) => {
 					assert.equal(code, outputSource);
 					assert.deepEqual(map, outputSourceMap);
-				}
+				},
+				query: {}
 			});
 			loader(inputSource, inputSourceMap);
 		});

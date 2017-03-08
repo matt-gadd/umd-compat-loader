@@ -60,11 +60,11 @@ function convert(content, sourceMap, amd) {
 }
 
 module.exports = function(content, sourceMap) {
-	const query = loaderUtils.parseQuery(this.query);
+	const options = loaderUtils.getOptions(this);
 	this.cacheable && this.cacheable();
 
 	if (sniff(content)) {
-		const ast = convert(content, sourceMap, query.amd);
+		const ast = convert(content, sourceMap, options.amd);
 		if(sourceMap) {
 			const result = recast.print(ast, { sourceMapName: sourceMap.file });
 			const map = compose(sourceMap, result.map);
