@@ -19,3 +19,20 @@ It fails to follow the require down the commonjs path so dependencies are not re
 This loader simply removes the UMD wrapper - effectively unwrapping it back to commonjs, the source maps should be remapped accordingly.
 
 If you want to unwrap the UMD wrapper to AMD, provide a query of `amd` to the loader. For example: `umd-compat-loader?amd=true`;
+
+## Experimental TS UMD down-emitted imports() support
+
+Experimental support for transforming down emitted `imports()` from TS 2.4, allows transforming lazy require statements to other values.
+
+An example of automatically bundling modules as separate chunks:
+
+```javascript
+loader: 'umd-compat-loader',
+options: {
+	imports(module, context) {
+		const result = path.relative(basePath, path.join(context, module));
+		return `promise-loader?global,${result}!${module}`;
+	}
+}
+```
+
