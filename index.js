@@ -9,7 +9,7 @@ function sniff(content) {
 }
 
 function sniffDownEmittedImport(content) {
-	return content.indexOf('(__syncRequire ? Promise.resolve().then(function () {') > -1;
+	return content.indexOf('__syncRequire ? Promise.resolve().then') > -1;
 }
 
 function matches(arr) {
