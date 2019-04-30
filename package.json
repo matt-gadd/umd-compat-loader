@@ -8,7 +8,7 @@
     "type": "git",
     "url": "http://github.com/matt-gadd/umd-compat-loader.git"
   },
-  "license": "BSD",
+  "license": "Apache-2.0",
   "scripts": {
     "test": "mocha"
   },
