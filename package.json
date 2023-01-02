@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "ast-types": "^0.13.3",
-    "loader-utils": "^1.0.3",
+    "loader-utils": "^3.2.1",
     "recast": "^0.20.0"
   },
   "devDependencies": {
